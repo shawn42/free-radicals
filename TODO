@@ -1,0 +1,18 @@
+Notes :
+electron shells: http://en.wikipedia.org/wiki/Noble_gas
+Z   Element   No. of electrons/shell
+2   helium  2
+10  neon  2, 8
+18  argon   2, 8, 8
+36  krypton   2, 8, 18, 8
+54  xenon   2, 8, 18, 18, 8
+86  radon   2, 8, 18, 32, 18, 8
+118   ununoctium  2, 8, 18, 32, 32, 18, 8
+
+
+Timeline:
+Thu Jun 25 17:43:02 PDT 2009
+- idea FreeRadicals
+- research started
+- got initial github account
+- got atom actor on the stage
