@@ -2,9 +2,14 @@ require 'level'
 require 'ftor'
 class DemoLevel < Level
   def setup
-
+    @electrons = []
+    @atoms = []
     10.times do
-      create_actor :atom, :x => 40+rand(600), :y => 40+rand(600)
+      atom = create_actor :atom, :x => 40+rand(600), :y => 40+rand(600)
+      atom.when :freed_electron do |e|
+        @electrons << e
+      end
+      @atoms << atom
     end
 
     @stars = []

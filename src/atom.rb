@@ -1,6 +1,7 @@
 require 'actor'
 require 'actor_view'
 require 'ftor'
+require 'publisher'
 
 class AtomView < ActorView
   def draw(target, x_off, y_off)
@@ -14,9 +15,10 @@ class AtomView < ActorView
 end
 
 class Atom < Actor
-
+  extend Publisher
   attr_accessor :nucleus_size, :shell_distance, :charge
   has_behaviors :updatable
+  can_fire :freed_electron
   
   def setup
     @nucleus_size = 15
@@ -29,17 +31,22 @@ class Atom < Actor
     end
 
     input_manager.reg MouseUpEvent, :left do |evt|
-      discharge if charging?
+      discharge(evt.pos[0],evt.pos[1]) if charging?
     end
 
+    @electrons = []
     electron_count = rand(9)+1
     electron_count.times do |i|
       shell = get_shell_for_electron(i+1)
       @shell_count = shell if shell > @shell_count
-      vec = Ftor.new @shell_distance*shell, 0
+      
+      #vec = Ftor.new @shell_distance*shell, 0
       rads = deg_to_rads(rand(359))
-      vec.rotate!(rads)
-      spawn :electron, :x => x+vec.x, :y => y+vec.y, :shell => shell
+      #vec.rotate!(rads)
+      ex = @shell_distance * shell * Math.cos(rads)
+      ey = @shell_distance * shell * Math.sin(rads)
+      el = spawn :electron, :x => x+ex, :y => y+ey, :shell => shell, :nucleus => self
+      @electrons << el
     end
   end
   
@@ -51,16 +58,35 @@ class Atom < Actor
     puts "charging..."
     @charge = 0
     @charging = true
+    play_sound :atom_charge
   end
   
-  def discharge
+  def discharge(dx, dy)
     puts "ZAP [#{@charge}]"
     @charging = false
-    # TODO send electrons flying
+    
+    # discharge the closes electron to the mouse up
+    el = nil
+    min_dist = 99_999
+    @electrons.each do |e|
+      dist = (dx-e.x)*(dx-e.x)+(dy-e.y)*(dy-e.y)
+      if dist < min_dist
+        el = e
+        min_dist = dist
+        p dist
+      end
+    end
+    @electrons.delete el
+    
+    stop_sound :atom_charge
+    el.free Ftor.new(dx-x,dy-y)
+    
+    fire :freed_electron, el
   end
 
+  # TODO move this to common place
   def deg_to_rads(deg)
-    deg * 3.14 / 180.0
+    deg * Math::PI / 180.0
   end
 
   def get_shell_for_electron(nth)
