@@ -4,17 +4,34 @@ require 'ftor'
 require 'publisher'
 
 class AtomView < ActorView
-  NUCLEUS_COLOR = [240,45,45,255]
-  INERT_NUCLEUS_COLOR = [225,225,225,155]
+  NUCLEUS_COLORS = [[240,45,45,255],[240,45,245,255],[40,45,245,255],[240,245,0,255]]
+  INERT_NUCLEUS_COLOR = [0,0,0,155]
+  NUCLEUS_COLOR = [25,25,25,155]
   SHELL_COLOR = [40,5,245,255]
   CHARGING_COLOR = [240,245,245,55]
   def draw(target, x_off, y_off)
-    target.draw_circle_s [@actor.x,@actor.y], @actor.nucleus_size, NUCLEUS_COLOR
-    target.draw_circle_s [@actor.x,@actor.y], @actor.nucleus_size, INERT_NUCLEUS_COLOR if @actor.inert?
+    if @nucleus_parts.nil?
+      @nucleus_parts = []
+      deg = rand(359)
+      5.times do
+        c = NUCLEUS_COLORS[rand(NUCLEUS_COLORS.size)]
+        rads = @actor.deg_to_rads(deg)
+        size = @actor.nucleus_size*0.4
+        ex = size * Math.cos(rads)
+        ey = size * Math.sin(rads)
+        @nucleus_parts << [ex,ey,c]
+        deg = deg+50+rand(30)
+      end
+    end
+    @nucleus_parts.each do |np|
+      target.draw_circle_s [@actor.x+np[0],@actor.y+np[1]], @actor.nucleus_size*0.7, np[2]
+    end
     
     @actor.shell_count.times do |i|
       target.draw_circle [@actor.x,@actor.y], @actor.shell_distance*(i+1), SHELL_COLOR
     end
+    target.draw_circle_s [@actor.x,@actor.y], @actor.nucleus_size*1.2, NUCLEUS_COLOR
+    target.draw_circle_s [@actor.x,@actor.y], @actor.shell_distance*@actor.shell_count+2, INERT_NUCLEUS_COLOR if @actor.inert?
     
     if @actor.charging?
       target.draw_circle_s [@actor.x,@actor.y], @actor.charge*0.03, CHARGING_COLOR
@@ -31,6 +48,26 @@ class Atom < Actor
   attr_accessor :nucleus_size, :shell_distance, :shell_count, :charge
   has_behaviors :updatable
   can_fire :freed_electron
+  
+  INERT_ELEMENTS = {
+    2 => 'helium',
+    10 => 'neon',
+    18 => 'argon',
+    36 => 'krypton',
+    54 => 'xenon',
+    86 => 'radon',
+    118 => 'ununoctium'
+  }
+  
+  INERT_ELEMENT_SYMBOLS = {
+    2 => 'He',
+    10 => 'Ne',
+    18 => 'Ar',
+    36 => 'Kr',
+    54 => 'Xe',
+    86 => 'Rn',
+    118 => 'Uuo'
+  }
   
   def setup
     @nucleus_size = 18
@@ -59,16 +96,23 @@ class Atom < Actor
   end
   
   def outer_shell_label
-    case @shell_count
-    when 1
-      if @electrons[@shell_count].size == 1
-        "+1"
-      else
-        "He"
-      end
+    if inert?
+      INERT_ELEMENT_SYMBOLS[electron_count]
     else
-      "#{@electrons[@shell_count].size}"
+      case @shell_count
+      when 1
+        if @electrons[@shell_count].size == 1
+          "+1"
+        end
+      else
+        "#{@electrons[@shell_count].size}"
+      end
     end
+  end
+  
+  def electron_count
+    count = @electrons.collect{|k,v|v.size}.inject(0) { |s,v| s += v }
+    count.nil? ? 0 : count
   end
   
   def charging?
@@ -150,7 +194,7 @@ class Atom < Actor
   end
 
   def get_shell_for_next_electron
-    nth = @electrons.collect{|k,v|v.size}.inject(0) { |s,v| s += v }+1
+    nth = electron_count+1
     if nth < 3
       return 1
     elsif nth < 11
