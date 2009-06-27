@@ -18,6 +18,7 @@ SOUND_PATH =  APP_ROOT + "data/sounds/"
 MUSIC_PATH =  APP_ROOT + "data/music/"
 GFX_PATH =  APP_ROOT + "data/graphics/"
 FONTS_PATH =  APP_ROOT + "data/fonts/"
+LEVEL_PATH =  APP_ROOT + "data/levels/"
 
 require 'gamebox'
 

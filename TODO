@@ -1,14 +1,13 @@
 Todos:
 - get level loading work so I can predefine levels
 - get obstacles working
-- nucleus drawing based on a few small circles
-- level win condition (all atoms inert)
 - intro mode
 - add valence explanation to intro
 - inert special fx
 - base attraction on needed electrons or extra electrons?
 - add inert element symbols when completed
 - level cannot start off all inert
+- BUG!! shooting an electron really hard can cause it to "escape" the screen, making the level un-finishable
 
 Ideas:
 - add charge indicator on nucleus (+/-) size indicates size of charge
@@ -54,3 +53,10 @@ Fri Jun 26 19:16:36 PDT 2009
 
 Sat Jun 27 12:14:18 PDT 2009
 - added scoring for inert atoms
+
+Sat Jun 27 15:30:33 PDT 2009
+- cleaned up nucleus drawing
+- added element abbr to inert elements
+
+Sat Jun 27 15:50:59 PDT 2009
+- added loading of actual levels

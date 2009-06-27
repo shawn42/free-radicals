@@ -7,8 +7,10 @@ class DemoLevel < Level
     @atoms = []
     @score = create_actor :score, :x => 10, :y => 10
     sound_manager.play_music :background
-    5.times do
-      atom = create_actor :atom, :x => 40+rand(900), :y => 40+rand(700)
+    # TODO how does one correctly extend ResourceManager?
+    level_def = YAML::load_file(LEVEL_PATH+@opts[:level_file])
+    level_def[:atoms].each do |atom_def|
+      atom = create_actor :atom, :x => atom_def[:x], :y => atom_def[:x], :electrons => atom_def[:electrons]
       atom.when :freed_electron do |e|
         @electrons << e
       end
@@ -52,7 +54,7 @@ class DemoLevel < Level
         #@sound_manager.play_sound :failed
       end
     elsif non_inert_atoms.size == 1
-      if !@electrons.empty?
+      if @electrons.empty?
         fire :restart_level 
         puts "failed; only one atom left!"
         #@sound_manager.play_sound :failed

@@ -89,8 +89,7 @@ class Atom < Actor
     end
 
     @electrons = {}
-    electron_count = rand(40)+1
-    electron_count.times do |i|
+    @opts[:electrons].times do |i|
       add_electron
     end
   end

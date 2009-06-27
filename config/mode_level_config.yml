@@ -1,3 +1,8 @@
 :modes: 
   - :default: 
     - :demo:
+        :level_file: one.yml
+    - :demo:
+        :level_file: two.yml
+    - :demo:
+        :level_file: three.yml
