@@ -117,7 +117,7 @@ class Atom < Actor
     update_inertness
     
     stop_sound :atom_charge
-    el.free Ftor.new(dx-x,dy-y)
+    el.free Ftor.new(el.x-x,el.y-y).normal*@charge*0.1
     puts "[#{self.object_id}] freeing electron [#{el.object_id}]"
     fire :freed_electron, el
   end
