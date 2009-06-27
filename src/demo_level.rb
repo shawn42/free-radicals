@@ -5,7 +5,7 @@ class DemoLevel < Level
     @electrons = []
     @atoms = []
     @score = create_actor :score, :x => 10, :y => 10
-    #sound_manager.play_music :background
+    sound_manager.play_music :background
     4.times do
       atom = create_actor :atom, :x => 40+rand(600), :y => 40+rand(600)
       atom.when :freed_electron do |e|
