@@ -4,10 +4,16 @@ class DemoLevel < Level
   def setup
     @electrons = []
     @atoms = []
+    @score = create_actor :score, :x => 10, :y => 10
+    #sound_manager.play_music :background
     4.times do
       atom = create_actor :atom, :x => 40+rand(600), :y => 40+rand(600)
       atom.when :freed_electron do |e|
         @electrons << e
+      end
+      
+      atom.when :inert do 
+        @score.score += 10
       end
       @atoms << atom
     end
@@ -18,6 +24,7 @@ class DemoLevel < Level
 
   def update(time)
     
+    @director.update time
     # apply attraction forces to freed electrons
     @electrons.each do |e|
       @atoms.each do |a|
@@ -28,7 +35,6 @@ class DemoLevel < Level
         end
       end
     end
-    @director.update time
   end
 
   def draw(target, x_off, y_off)

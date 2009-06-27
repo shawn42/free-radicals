@@ -81,9 +81,11 @@ class Atom < Actor
       @inert = false
       return
     end
-    if @shell_count == 1 && @electrons[1].size
+    if @shell_count == 1 && @electrons[1].size == 2
+      fire :inert unless @inert
       @inert = true
     elsif @electrons[@shell_count].size == 8
+      fire :inert unless @inert
       @inert = true
     else
       @inert = false
@@ -116,7 +118,7 @@ class Atom < Actor
     
     stop_sound :atom_charge
     el.free Ftor.new(dx-x,dy-y)
-    
+    puts "[#{self.object_id}] freeing electron [#{el.object_id}]"
     fire :freed_electron, el
   end
 
@@ -167,6 +169,7 @@ class Atom < Actor
     return if inert?
     if point_hits? el.x, el.y
       add_electron el
+      puts "[#{self.object_id}] adding electron [#{el.object_id}]"
       play_sound :electron_freed
       return true
     else
