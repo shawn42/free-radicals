@@ -2,12 +2,13 @@ require 'level'
 require 'ftor'
 class DemoLevel < Level
   def setup
+    puts "starting level..."
     @electrons = []
     @atoms = []
     @score = create_actor :score, :x => 10, :y => 10
     sound_manager.play_music :background
-    4.times do
-      atom = create_actor :atom, :x => 40+rand(600), :y => 40+rand(600)
+    5.times do
+      atom = create_actor :atom, :x => 40+rand(900), :y => 40+rand(700)
       atom.when :freed_electron do |e|
         @electrons << e
       end
@@ -33,6 +34,28 @@ class DemoLevel < Level
           @electrons.delete e
           break
         end
+      end
+    end
+    
+    # win - lose conditions
+    non_inert_atoms = @atoms.select{|a|!a.inert?}
+    if non_inert_atoms.size == 0
+      
+      if @electrons.empty?
+        fire :next_level 
+        puts "victory!!"
+        #@sound_manager.play_sound :victory
+      end
+      if !@electrons.empty?
+        fire :restart_level 
+        puts "failed; extra electrons!"
+        #@sound_manager.play_sound :failed
+      end
+    elsif non_inert_atoms.size == 1
+      if !@electrons.empty?
+        fire :restart_level 
+        puts "failed; only one atom left!"
+        #@sound_manager.play_sound :failed
       end
     end
   end

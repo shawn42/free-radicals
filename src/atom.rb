@@ -19,6 +19,10 @@ class AtomView < ActorView
     if @actor.charging?
       target.draw_circle_s [@actor.x,@actor.y], @actor.charge*0.03, CHARGING_COLOR
     end
+    
+    @font ||= @mode.resource_manager.load_font 'Asimov.ttf', 30
+    text_image = @font.render @actor.outer_shell_label, true, [250,250,250,255]
+    text_image.blit target.screen, [@actor.x-0.5*@actor.nucleus_size,@actor.y-0.5*@actor.nucleus_size]
   end
 end
 
@@ -29,23 +33,41 @@ class Atom < Actor
   can_fire :freed_electron
   
   def setup
-    @nucleus_size = 15
+    @nucleus_size = 18
     @shell_distance = 30
     @shell_count = 0
     @charge = 0
 
+    # TODO unregister when I go inert
     input_manager.reg MouseDownEvent, :left do |evt|
-      start_charging if point_hits? evt.pos[0], evt.pos[1]
+      unless inert?
+        start_charging if point_hits? evt.pos[0], evt.pos[1]
+      end
     end
 
     input_manager.reg MouseUpEvent, :left do |evt|
-      discharge(evt.pos[0],evt.pos[1]) if charging?
+      unless inert?
+        discharge(evt.pos[0],evt.pos[1]) if charging?
+      end
     end
 
     @electrons = {}
-    electron_count = rand(30)+1
+    electron_count = rand(40)+1
     electron_count.times do |i|
       add_electron
+    end
+  end
+  
+  def outer_shell_label
+    case @shell_count
+    when 1
+      if @electrons[@shell_count].size == 1
+        "+1"
+      else
+        "He"
+      end
+    else
+      "#{@electrons[@shell_count].size}"
     end
   end
   
@@ -77,7 +99,7 @@ class Atom < Actor
   end
   
   def update_inertness
-    if @electrons[1].nil?
+    if @electrons[1].nil? or @electrons[@shell_count].nil?
       @inert = false
       return
     end
@@ -137,9 +159,14 @@ class Atom < Actor
       return 3
     elsif nth < 61
       return 4
-    else
-      puts "whoa that's too many electrons!!!"
+    elsif nth < 79
       return 5
+    elsif nth < 111
+      return 6  
+    elsif nth < 119
+      return 7
+    else
+      return 8
     end
   end
   

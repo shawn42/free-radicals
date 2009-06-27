@@ -5,6 +5,7 @@ require 'ftor'
 class ElectronView < ActorView
   def draw(target, x_off, y_off)
     target.draw_circle_s [@actor.x,@actor.y], @actor.radius, [40,225,25,255]
+    target.draw_circle_s [@actor.x,@actor.y], @actor.radius+3, [20,255,20,155]
   end
 end
 
