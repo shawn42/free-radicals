@@ -12,21 +12,24 @@ class Electron < Actor
 
   has_behaviors :updatable, :layered => 2
 
-  attr_accessor :radius, :nucleus, :shell, :force
+  attr_accessor :radius, :nucleus, :shell, :force, :bounced
   
   def setup
     @nucleus = @opts[:nucleus]
-    @shell = @opts[:shell]
-    @radius = 3
+    self.shell = @opts[:shell]
     @speed = 90
-    
-    @speed_deg = 90+rand(90)
+    @radius = 3
     @force = Ftor.new 0, 0
   end
   
+  def shell=(new_shell)
+    @speed_deg = 90+rand(90)
+    @shell = new_shell
+  end
+  
   def free(force)
-    @force = Ftor.new @x-@nucleus.x, @y-@nucleus.y
-    @force.m = force.m
+    @force = Ftor.new(@x-@nucleus.x, @y-@nucleus.y)
+    @force.m = force.m*0.1
     @nucleus = nil
     @shell = nil
     play_sound :electron_freed
@@ -37,6 +40,22 @@ class Electron < Actor
       dir_vec = @force * @speed * (time/1000.0)
       @x += dir_vec.x
       @y += dir_vec.y
+      
+      
+      # hardcode the borders for now
+      if !bounced && (@x <= 0 || @x >= 1024)
+        play_sound :electron_freed
+        @force *= 0.6
+        @force = Ftor.new(-@force.x,@force.y)
+        @bounced = true
+      elsif !bounced && (@y <= 0 || @y >= 800)
+        play_sound :electron_freed
+        @force *= 0.6
+        @force = Ftor.new(@force.x,-@force.y)
+        @bounced = true
+      end
+      @bounced = false if @y > 0 && @y < 800 && @x > 0 && @x < 1024
+      
     else
       # follow shell
       movement_deg = @speed_deg * (time/1000.0)
@@ -55,6 +74,7 @@ class Electron < Actor
       ey = @nucleus.shell_distance * @shell * Math.sin(rads)
       @x = ex+@nucleus.x
       @y = ey+@nucleus.y
+        
     end
   end
   
