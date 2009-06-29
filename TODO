@@ -1,14 +1,13 @@
 Todos:
+- add more levels!!
 - get obstacles working
-- intro mode
-- add valence explanation to intro
-- inert special fx
-- base attraction on needed electrons or extra electrons?
+- base attraction on number of electrons?
 - BUG!! shooting an electron really hard can cause it to "escape" the screen, making the level un-finishable
 
 Ideas:
 - add charge indicator on nucleus (+/-) size indicates size of charge
 - what if electrons are allow to vanish?
+- triggers that need you to shoot electrons into them?
 - more points for larger atoms?
 - fading effect for inert atoms
 - flashing effect for vanishing electrons?
@@ -47,3 +46,11 @@ Sat Jun 27 15:30:33 PDT 2009
 
 Sat Jun 27 15:50:59 PDT 2009
 - added loading of actual levels
+
+Sun Jun 28 17:00:37 PDT 2009
+- added timer
+- inert atoms now repel
+- fixed score passover issue
+- added intro/help "level"
+- added credits "level"
+- submitted final w/ only 3 levels  :(

@@ -7,3 +7,5 @@
         :level_file: two.yml
     - :demo:
         :level_file: three.yml
+    - :demo:
+        :level_file: four.yml

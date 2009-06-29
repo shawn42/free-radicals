@@ -1,0 +1,32 @@
+--- 
+:atoms: 
+- :y: 450
+  :x: 400
+  :electrons: 9
+- :y: 450
+  :x: 700
+  :electrons: 1
+- :y: 150
+  :x: 80
+  :electrons: 1
+- :y: 150
+  :x: 180
+  :electrons: 1
+- :y: 150
+  :x: 280
+  :electrons: 1
+- :y: 550
+  :x: 80
+  :electrons: 1
+- :y: 550
+  :x: 180
+  :electrons: 1
+- :y: 550
+  :x: 280
+  :electrons: 1
+- :y: 750
+  :x: 880
+  :electrons: 3
+- :y: 250
+  :x: 880
+  :electrons: 1

@@ -242,7 +242,8 @@ class Atom < Actor
     
       dist = Math.sqrt(dx*dx+dy*dy)
       f = Ftor.new(dx,dy)/dist.to_f/100.0
-      el.force += f*-0.5
+      # repel a little, too much makes it weird at the end when most atoms are inert
+      el.force += f*-0.2
       return false
     else
       if point_hits? el.x, el.y
