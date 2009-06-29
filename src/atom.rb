@@ -77,13 +77,13 @@ class Atom < Actor
 
     # TODO unregister when I go inert
     input_manager.reg MouseDownEvent, :left do |evt|
-      unless inert?
+      unless inert? || electron_count == 1
         start_charging if point_hits? evt.pos[0], evt.pos[1]
       end
     end
 
     input_manager.reg MouseUpEvent, :left do |evt|
-      unless inert?
+      unless inert? || electron_count == 1
         discharge(evt.pos[0],evt.pos[1]) if charging?
       end
     end
@@ -236,21 +236,30 @@ class Atom < Actor
 
   # returns true if the atom claims the electron
   def attract(el)
-    return if inert?
-    if point_hits? el.x, el.y
-      add_electron el
-      puts "[#{self.object_id}] adding electron [#{el.object_id}]"
-      play_sound :electron_freed
-      return true
-    else
+    if inert?
       dx = @x-el.x
       dy = @y-el.y
-      
+    
       dist = Math.sqrt(dx*dx+dy*dy)
       f = Ftor.new(dx,dy)/dist.to_f/100.0
-      el.force += f
+      el.force += f*-0.5
+      return false
+    else
+      if point_hits? el.x, el.y
+        add_electron el
+        puts "[#{self.object_id}] adding electron [#{el.object_id}]"
+        play_sound :electron_freed
+        return true
+      else
+        dx = @x-el.x
+        dy = @y-el.y
+      
+        dist = Math.sqrt(dx*dx+dy*dy)
+        f = Ftor.new(dx,dy)/dist.to_f/100.0
+        el.force += f
+      end
+      false
     end
-    false
   end
 
 end

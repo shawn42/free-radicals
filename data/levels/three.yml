@@ -2,7 +2,11 @@
 :atoms: 
 - :y: 150
   :x: 800
-  :electrons: 111
-- :y: 400
-  :x: 200
+  :electrons: 119
+- :y: 600
+  :x: 100
   :electrons: 1
+- :y: 250
+  :x: 300
+  :electrons: 10
+

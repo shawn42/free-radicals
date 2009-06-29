@@ -1,5 +1,6 @@
-:modes: 
+:modes:
   - :default: 
+    - :intro:  
     - :demo:
         :level_file: one.yml
     - :demo:

@@ -1,12 +1,18 @@
 require 'level'
 require 'ftor'
 class DemoLevel < Level
+  attr_accessor :score
   def setup
-    puts "starting level..."
     @electrons = []
     @atoms = []
     @score = create_actor :score, :x => 10, :y => 10
+    @time_left = create_actor :time_left, :x => 610, :y => 10
+    @time_left += 60_000
     sound_manager.play_music :background
+    
+    prev_level = @opts[:prev_level]
+    @score += prev_level.score.score if prev_level && prev_level.respond_to?(:score)
+    
     # TODO how does one correctly extend ResourceManager?
     level_def = YAML::load_file(LEVEL_PATH+@opts[:level_file])
     level_def[:atoms].each do |atom_def|
@@ -26,6 +32,7 @@ class DemoLevel < Level
   end
 
   def update(time)
+    @time_left -= time
     
     @director.update time
     # apply attraction forces to freed electrons
@@ -42,23 +49,29 @@ class DemoLevel < Level
     # win - lose conditions
     non_inert_atoms = @atoms.select{|a|!a.inert?}
     if non_inert_atoms.size == 0
-      
       if @electrons.empty?
-        fire :next_level 
         puts "victory!!"
         @sound_manager.play_sound :victory
+        fire :next_level 
       end
       if !@electrons.empty?
-        fire :restart_level 
         puts "failed; extra electrons!"
         @sound_manager.play_sound :defeat
+        fire :restart_level
       end
     elsif non_inert_atoms.size == 1
       if @electrons.empty?
-        fire :restart_level 
         puts "failed; only one atom left!"
         @sound_manager.play_sound :defeat
+        fire :restart_level 
       end
+    end
+    
+    
+    if @time_left.time_left <= 0
+      puts "failed; ran out of time!"
+      @sound_manager.play_sound :defeat
+      fire :restart_level 
     end
   end
 
