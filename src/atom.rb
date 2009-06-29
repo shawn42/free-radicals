@@ -168,7 +168,7 @@ class Atom < Actor
     
     # discharge the closes electron to the mouse up
     el = nil
-    min_dist = 99_999
+    min_dist = 999_999
     last_shell = @shell_count
     @electrons[last_shell].each do |e|
       dist = (dx-e.x)*(dx-e.x)+(dy-e.y)*(dy-e.y)
