@@ -183,7 +183,6 @@ class Atom < Actor
     
     stop_sound :atom_charge
     el.free Ftor.new(el.x-x,el.y-y).normal*@charge*0.1
-    puts "[#{self.object_id}] freeing electron [#{el.object_id}]"
     fire :freed_electron, el
   end
 
@@ -217,8 +216,6 @@ class Atom < Actor
     diff_x = px-x
     diff_y = py-y
     dist = diff_x*diff_x+diff_y*diff_y
-    
-    # TODO hard coded to first shell
     dist.abs <= shell_count*@shell_distance*@shell_distance*shell_count
   end
   
@@ -243,12 +240,11 @@ class Atom < Actor
       dist = Math.sqrt(dx*dx+dy*dy)
       f = Ftor.new(dx,dy)/dist.to_f/100.0
       # repel a little, too much makes it weird at the end when most atoms are inert
-      el.force += f*-0.2
+      el.force += f*-0.1*electron_count
       return false
     else
       if point_hits? el.x, el.y
         add_electron el
-        puts "[#{self.object_id}] adding electron [#{el.object_id}]"
         play_sound :electron_freed
         return true
       else
@@ -258,6 +254,7 @@ class Atom < Actor
         dist = Math.sqrt(dx*dx+dy*dy)
         f = Ftor.new(dx,dy)/dist.to_f/100.0
         el.force += f
+        el.force += f*0.2*electron_count
       end
       false
     end

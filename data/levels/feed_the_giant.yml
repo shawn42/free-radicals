@@ -1,0 +1,35 @@
+--- 
+  :name: "Feed the giant"
+  :author: "ippa @ #freenode"
+  :description: ""
+  :atoms: 
+  - :y: 400
+    :x: 500
+    :electrons: 23
+  - :y: 100
+    :x: 100
+    :electrons: 3
+  - :y: 350
+    :x: 100
+    :electrons: 3
+  - :y: 600
+    :x: 100
+    :electrons: 3
+  - :y: 600
+    :x: 300
+    :electrons: 3
+  - :y: 600
+    :x: 800
+    :electrons: 3
+  - :y: 700
+    :x: 800
+    :electrons: 3
+  - :y: 690
+    :x: 430
+    :electrons: 3
+  - :y: 710
+    :x: 120
+    :electrons: 3
+  - :y: 370
+    :x: 820
+    :electrons: 3
