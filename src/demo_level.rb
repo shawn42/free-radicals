@@ -13,8 +13,11 @@ class DemoLevel < Level
     prev_level = @opts[:prev_level]
     @score += prev_level.score.score if prev_level && prev_level.respond_to?(:score)
     
+    
     # TODO how does one correctly extend ResourceManager?
     level_def = YAML::load_file(LEVEL_PATH+@opts[:level_file])
+    
+    create_actor(:text_box, :x => 500, :y => 350, :alpha => 100, :size => 50, :text => level_def[:name]) if level_def[:name]
     level_def[:atoms].each do |atom_def|
       atom = create_actor :atom, :x => atom_def[:x], :y => atom_def[:y], :electrons => atom_def[:electrons]
       atom.when :freed_electron do |e|
