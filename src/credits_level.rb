@@ -1,4 +1,8 @@
 require 'level'
+require 'actor'
+class Unicorn < Actor
+  has_behaviors :graphical
+end
 class CreditsLevel < Level
   def setup
     @electrons = []
@@ -16,8 +20,11 @@ class CreditsLevel < Level
       @atoms << atom
     end
     
-    create_actor(:text_box, :x => 200, :y => 250, :text => 'Welcome to Free Radicals')
+    create_actor :unicorn, :x => 500, :y => 150
+
+    create_actor(:text_box, :x => 400, :y => 250, :text => 'You Win!')
     create_actor(:text_box, :x => 280, :y => 450, :text => 'by Shawn Anderson (shawn42)')
+    create_actor(:text_box, :x => 500, :y => 110, :text => '(the unicorn is for jacius)', :size => 20)
 
     @stars = []
     20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
