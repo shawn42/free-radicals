@@ -24,7 +24,8 @@ class DemoLevel < Level
     time ||= 60_000
     @time_left += time.to_i
         
-    create_actor(:text_box, :x => 500, :y => 350, :alpha => 100, :size => 50, :text => level_def[:name]) if level_def[:name]
+    create_actor(:text_box, :x => 500, :y => 350, :alpha => 50, :size => 50, :text => level_def[:name]) if level_def[:name]
+    create_actor(:text_box, :x => 500, :y => 450, :alpha => 50, :size => 20, :text => "by: "+level_def[:author]) if level_def[:author]
     level_def[:atoms].each do |atom_def|
       atom = create_actor :atom, :x => atom_def[:x], :y => atom_def[:y], :electrons => atom_def[:electrons]
       atom.when :freed_electron do |e|
