@@ -16,6 +16,11 @@ class DemoLevel < Level
       fire :restart_level
       input_manager.clear_hooks self
     end
+    input_manager.reg KeyDownEvent, K_RSHIFT do
+      fire :next_level
+      sound_manager.play_sound :defeat
+      input_manager.clear_hooks self
+    end
     
     # TODO how does one correctly extend ResourceManager?
     level_def = YAML::load_file(LEVEL_PATH+@opts[:level_file])
