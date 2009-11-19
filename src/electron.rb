@@ -13,7 +13,7 @@ class Electron < Actor
 
   has_behaviors :updatable, :layered => 2
 
-  attr_accessor :radius, :nucleus, :shell, :force, :bounced
+  attr_accessor :radius, :nucleus, :shell, :force
   
   def setup
     @nucleus = @opts[:nucleus]
@@ -44,18 +44,27 @@ class Electron < Actor
       
       
       # hardcode the borders for now
-      if !bounced && (@x <= 0 || @x >= 1024)
+      if @x <= 0  
         play_sound :electron_freed
         @force *= 0.6
+        @x = -@x
         @force = Ftor.new(-@force.x,@force.y)
-        @bounced = true
-      elsif !bounced && (@y <= 0 || @y >= 800)
+      elsif @x >= 1024
         play_sound :electron_freed
         @force *= 0.6
+        @x -= @x-1024
+        @force = Ftor.new(-@force.x,@force.y)
+      elsif @y <= 0 
+        play_sound :electron_freed
+        @force *= 0.6
+        @y = -@y
         @force = Ftor.new(@force.x,-@force.y)
-        @bounced = true
+      elsif @y >= 800
+        play_sound :electron_freed
+        @force *= 0.6
+        @y -= @y-800
+        @force = Ftor.new(@force.x,-@force.y)
       end
-      @bounced = false if @y > 0 && @y < 800 && @x > 0 && @x < 1024
       
     else
       # follow shell
