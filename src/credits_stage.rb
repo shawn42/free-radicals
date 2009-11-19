@@ -1,18 +1,19 @@
-require 'level'
+require 'stage'
 require 'actor'
 class Unicorn < Actor
   has_behaviors :graphical
 end
-class CreditsLevel < Level
+class CreditsStage < Stage
   def setup
+    super
     @electrons = []
     @atoms = []
     sound_manager.play_music :background
-    level_def = {}
-    level_def[:atoms] = []
+    stage_def = {}
+    stage_def[:atoms] = []
     atom_def = {:x => 100,:y=>200,:electrons=>118}
-    level_def[:atoms] << atom_def
-    level_def[:atoms].each do |atom_def|
+    stage_def[:atoms] << atom_def
+    stage_def[:atoms].each do |atom_def|
       atom = create_actor :atom, :x => atom_def[:x], :y => atom_def[:y], :electrons => atom_def[:electrons]
       atom.when :freed_electron do |e|
         @electrons << e
@@ -44,14 +45,15 @@ class CreditsLevel < Level
       end
     end
     
-   
+   super
   end
 
-  def draw(target, x_off, y_off)
+  def draw(target)
     target.fill [25,25,25,255]
     for star in @stars
       target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
     end
+    super
   end
 end
 

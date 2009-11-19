@@ -1,0 +1,21 @@
+:stages:
+  - :intro:  
+  - :demo1:
+      :class: :demo
+      :stage_file: one.yml
+  - :demo2:
+      :class: :demo
+      :stage_file: two.yml
+  - :demo3:
+      :class: :demo
+      :stage_file: three.yml
+  - :demo4:
+      :class: :demo
+      :stage_file: dont_lose_anyone.yml
+  - :demo5:
+      :class: :demo
+      :stage_file: feed_the_giant.yml
+  - :demo6:
+      :class: :demo
+      :stage_file: four.yml
+  - :credits:

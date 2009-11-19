@@ -1,16 +1,17 @@
-require 'level'
+require 'stage'
 require 'ftor'
-class IntroLevel < Level
+class IntroStage < Stage
   def setup
-    puts "starting level..."
+    super
+    puts "starting stage..."
     @electrons = []
     @atoms = []
     sound_manager.play_music :background
-    level_def = {}
-    level_def[:atoms] = []
+    stage_def = {}
+    stage_def[:atoms] = []
     atom_def = {:x => 100,:y=>200,:electrons=>3}
-    level_def[:atoms] << atom_def
-    level_def[:atoms].each do |atom_def|
+    stage_def[:atoms] << atom_def
+    stage_def[:atoms].each do |atom_def|
       atom = create_actor :atom, :x => atom_def[:x], :y => atom_def[:y], :electrons => atom_def[:electrons]
       atom.when :freed_electron do |e|
         @electrons << e
@@ -29,7 +30,7 @@ class IntroLevel < Level
       
       @atoms.first.input_manager.reg KeyDownEvent do 
         @atoms.first.input_manager.clear_hooks
-        fire :next_level
+        fire :next_stage
       end
     end
     
@@ -73,14 +74,16 @@ class IntroLevel < Level
       end
     end
     
+    super
    
   end
 
-  def draw(target, x_off, y_off)
+  def draw(target)
     target.fill [25,25,25,255]
     for star in @stars
       target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
     end
+    super
   end
 end
 

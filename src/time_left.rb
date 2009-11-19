@@ -3,7 +3,7 @@ class TimeLeftView < ActorView
     text = (@actor.time_left/1000.0).ceil.to_s
     text = '0'*(3-text.size)+text
 
-    font = @mode.resource_manager.load_font 'Asimov.ttf', 30
+    font = @stage.resource_manager.load_font 'Asimov.ttf', 30
     text_image = font.render text, true, [250,250,250,255]
 
     x = @actor.x

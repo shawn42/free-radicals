@@ -37,7 +37,7 @@ class AtomView < ActorView
       target.draw_circle_s [@actor.x,@actor.y], @actor.charge*0.03, CHARGING_COLOR
     end
     
-    @font ||= @mode.resource_manager.load_font 'Asimov.ttf', 30
+    @font ||= @stage.resource_manager.load_font 'Asimov.ttf', 30
     text_image = @font.render @actor.outer_shell_label, true, [250,250,250,255]
     text_image.blit target.screen, [@actor.x-0.5*@actor.nucleus_size,@actor.y-0.5*@actor.nucleus_size]
   end
