@@ -1,7 +1,3 @@
-require 'actor'
-require 'actor_view'
-require 'ftor'
-require 'publisher'
 
 class AtomView < ActorView
   NUCLEUS_COLORS = [[240,45,45,255],[240,45,245,255],[40,45,245,255],[240,245,0,255]]
@@ -9,7 +5,7 @@ class AtomView < ActorView
   NUCLEUS_COLOR = [25,25,25,155]
   SHELL_COLOR = [40,5,245,255]
   CHARGING_COLOR = [240,245,245,55]
-  def draw(target, x_off, y_off)
+  def draw(target, x_off, y_off, z)
     if @nucleus_parts.nil?
       @nucleus_parts = []
       deg = rand(359)
@@ -24,29 +20,29 @@ class AtomView < ActorView
       end
     end
     @nucleus_parts.each do |np|
-      target.draw_circle_s [@actor.x+np[0],@actor.y+np[1]], @actor.nucleus_size*0.7, np[2]
+      target.draw_circle @actor.x+np[0], @actor.y+np[1], @actor.nucleus_size*0.7, np[2], z
     end
     
     @actor.shell_count.times do |i|
-      target.draw_circle [@actor.x,@actor.y], @actor.shell_distance*(i+1), SHELL_COLOR
+      target.draw_circle @actor.x,@actor.y, @actor.shell_distance*(i+1), SHELL_COLOR, z
     end
-    target.draw_circle_s [@actor.x,@actor.y], @actor.nucleus_size*1.2, NUCLEUS_COLOR
-    target.draw_circle_s [@actor.x,@actor.y], @actor.shell_distance*@actor.shell_count+2, INERT_NUCLEUS_COLOR if @actor.inert?
+    target.draw_circle @actor.x,@actor.y, @actor.nucleus_size*1.2, NUCLEUS_COLOR, z
+    target.draw_circle @actor.x,@actor.y, @actor.shell_distance*@actor.shell_count+2, INERT_NUCLEUS_COLOR, z if @actor.inert?
     
     if @actor.charging?
-      target.draw_circle_s [@actor.x,@actor.y], @actor.charge*0.03, CHARGING_COLOR
+      target.draw_circle @actor.x,@actor.y, @actor.charge*0.03, CHARGING_COLOR, z
     end
     
-    @font ||= @stage.resource_manager.load_font 'Asimov.ttf', 30
-    text_image = @font.render @actor.outer_shell_label, true, [250,250,250,255]
-    text_image.blit target.screen, [@actor.x-0.5*@actor.nucleus_size,@actor.y-0.5*@actor.nucleus_size]
+    # @font ||= @stage.resource_manager.load_font 'Asimov.ttf', 30
+    # text_image = @font.render @actor.outer_shell_label, true, [250,250,250,255]
+    # text_image.blit target.screen, [@actor.x-0.5*@actor.nucleus_size,@actor.y-0.5*@actor.nucleus_size]
   end
 end
 
 class Atom < Actor
   extend Publisher
   attr_accessor :nucleus_size, :shell_distance, :shell_count, :charge
-  has_behaviors :updatable
+  has_behaviors :updatable, :audible
   can_fire :freed_electron
   
   INERT_ELEMENTS = {
@@ -76,15 +72,17 @@ class Atom < Actor
     @charge = 0
 
     # TODO unregister when I go inert
-    input_manager.reg MouseDownEvent, :left do |evt|
+    input_manager.reg :mouse_down, MsLeft do |evt|
       unless inert? || electron_count == 1
-        start_charging if point_hits? evt.pos[0], evt.pos[1]
+        pos = evt[:data]
+        start_charging if point_hits? pos[0], pos[1]
       end
     end
 
-    input_manager.reg MouseUpEvent, :left do |evt|
+    input_manager.reg :mouse_up, MsLeft do |evt|
       unless inert? || electron_count == 1
-        discharge(evt.pos[0],evt.pos[1]) if charging?
+        pos = evt[:data]
+        discharge(pos[0],pos[1]) if charging?
       end
     end
 
@@ -160,7 +158,7 @@ class Atom < Actor
   def start_charging
     @charge = 0
     @charging = true
-    play_sound :atom_charge
+    # play_sound :atom_charge
   end
   
   def discharge(dx, dy)
@@ -181,7 +179,7 @@ class Atom < Actor
     @shell_count -= 1 if @electrons[last_shell].empty?
     update_inertness
     
-    stop_sound :atom_charge
+    # stop_sound :atom_charge
     el.free Ftor.new(el.x-x,el.y-y).normal*@charge*0.1
     fire :freed_electron, el
   end
@@ -234,8 +232,8 @@ class Atom < Actor
   # returns true if the atom claims the electron
   def attract(el)
     if inert?
-      dx = @x-el.x
-      dy = @y-el.y
+      dx = x-el.x
+      dy = y-el.y
     
       dist = Math.sqrt(dx*dx+dy*dy)
       f = Ftor.new(dx,dy)/dist.to_f/100.0
@@ -248,8 +246,8 @@ class Atom < Actor
         play_sound :electron_freed
         return true
       else
-        dx = @x-el.x
-        dy = @y-el.y
+        dx = x-el.x
+        dy = y-el.y
       
         dist = Math.sqrt(dx*dx+dy*dy)
         f = Ftor.new(dx,dy)/dist.to_f/100.0

@@ -1,3 +1,7 @@
+class HookedGosuWindow
+  def needs_cursor?;true;end
+end
+
 class Game
 
   constructor :wrapped_screen, :input_manager, :sound_manager,
@@ -14,7 +18,6 @@ class Game
 
   def draw
     @stage_manager.draw @wrapped_screen
-    @wrapped_screen.flip
   end
 
 end

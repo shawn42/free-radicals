@@ -1,5 +1,4 @@
-require 'stage'
-require 'ftor'
+
 class IntroStage < Stage
   def setup
     super
@@ -28,7 +27,7 @@ class IntroStage < Stage
         i.show
       end
       
-      @atoms.first.input_manager.reg KeyDownEvent do 
+      @atoms.first.input_manager.reg :keyboard_up do 
         @atoms.first.input_manager.clear_hooks
         fire :next_stage
       end
@@ -56,12 +55,12 @@ class IntroStage < Stage
     @intros << second
 
 
-    @stars = []
-    20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
+    # @stars = []
+    # 20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
   end
 
   def update(time)
-    
+    super
     @director.update time
     # apply attraction forces to freed electrons
     @electrons.each do |e|
@@ -74,16 +73,16 @@ class IntroStage < Stage
       end
     end
     
-    super
+    # super
    
   end
 
-  def draw(target)
-    target.fill [25,25,25,255]
-    for star in @stars
-      target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
-    end
-    super
-  end
+  # def draw(target)
+  #   target.fill [25,25,25,255]
+  #   for star in @stars
+  #     target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
+  #   end
+  #   super
+  # end
 end
 

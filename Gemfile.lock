@@ -1,0 +1,32 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    chipmunk (5.3.4.4)
+    constructor (2.0.0)
+    diy (1.1.2)
+      constructor (>= 1.0.0)
+    gamebox (0.2.2)
+      chipmunk
+      constructor
+      diy
+      gosu
+      kvo
+      publisher
+      require_all
+    gosu (0.7.33)
+    kvo (0.0.1)
+      publisher
+    publisher (1.1.1)
+    rake (0.9.2)
+    require_all (1.2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  chipmunk
+  constructor
+  diy
+  gamebox
+  rake
+  require_all

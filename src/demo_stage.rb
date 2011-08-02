@@ -1,5 +1,3 @@
-require 'stage'
-require 'ftor'
 class DemoStage < Stage
   attr_accessor :score
   def setup
@@ -13,11 +11,11 @@ class DemoStage < Stage
     prev_stage = @opts[:prev_stage]
     @score += prev_stage.score.score if prev_stage && prev_stage.respond_to?(:score)
     
-    input_manager.reg KeyDownEvent, K_R do
+    input_manager.reg :keyboard_down, KbRight do
       fire :restart_stage
       input_manager.clear_hooks self
     end
-    input_manager.reg KeyDownEvent, K_RSHIFT do
+    input_manager.reg :keyboard_down, KbRightShift do
       fire :next_stage
       sound_manager.play_sound :defeat
       input_manager.clear_hooks self
@@ -39,7 +37,7 @@ class DemoStage < Stage
       end
       
       atom.when :inert do 
-        @score.score += 10
+        @score += 10
       end
       @atoms << atom
     end
@@ -49,6 +47,7 @@ class DemoStage < Stage
   end
 
   def update(time)
+
     @time_left -= time
     
     @director.update time
@@ -90,14 +89,15 @@ class DemoStage < Stage
       @sound_manager.play_sound :defeat
       fire :restart_stage 
     end
-  end
-
-  def draw(target)
-    target.fill [25,25,25,255]
-    for star in @stars
-      target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
-    end
     super
   end
+
+  # def draw(target)
+  #   # target.fill [25,25,25,255]
+  #   # for star in @stars
+  #   #   target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
+  #   # end
+  #   super
+  # end
 end
 

@@ -1,5 +1,4 @@
-require 'stage'
-require 'actor'
+
 class Unicorn < Actor
   has_behaviors :graphical
 end
@@ -32,8 +31,8 @@ class CreditsStage < Stage
   end
 
   def update(time)
-    
-    @director.update time
+    super
+    # @director.update time
     # apply attraction forces to freed electrons
     @electrons.each do |e|
       @atoms.each do |a|
